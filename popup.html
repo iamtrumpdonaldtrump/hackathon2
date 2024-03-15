@@ -1,20 +1,25 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Perspective Analyzer</title>
+  <title>Hejter Blocker</title>
   <style>
     body {
-      width: 300px;
+      width: 200px;
+      font-family: Arial, sans-serif;
       padding: 20px;
     }
   </style>
 </head>
 <body>
-  <h2>Perspective Analyzer</h2>
-  <p>Click the button to analyze toxicity.</p>
-  <button id="analyzeButton">Analyze!</button>
+  <h2>Hejter Blocker</h2>
+  <div>
+    <label for="toxicityLevel">Poziom Toksyczności:</label>
+    <input type="range" id="toxicityLevel" min="0" max="2" step="1" value="1">
+    <br>
+    <span>Niski</span> <span>Średni</span> <span>Wysoki</span>
+  </div>
+  <button id="analyzeButton">Analizuj!</button>
   <div id="result"></div>
-
   <script src="popup.js"></script>
 </body>
 </html>
