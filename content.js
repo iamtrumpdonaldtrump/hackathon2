@@ -1,3 +1,4 @@
+//var totalScores = 0;
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
   if (message.command === "analyze") {
     var textContent = document.body.innerText;
@@ -21,7 +22,6 @@ function analyzeText(text, toxicityLevel) {
           },
           body: JSON.stringify({
             comment: { text: sentence },
-            languages: ["pl"],
             requestedAttributes: {
               TOXICITY: {},
               INSULT: {},
@@ -39,6 +39,8 @@ function analyzeText(text, toxicityLevel) {
 
           var threshold = getThreshold(toxicityLevel);
           var toxic = toxicityScore > threshold || insultScore > threshold || profanityScore > threshold || threatScore > threshold;
+
+          totalScores += toxicityScore+insultScore+profanityScore+threatScore;
 
           console.log("Sentence:", sentence);
           console.log("Toxicity Score:", toxicityScore);
@@ -62,6 +64,8 @@ function analyzeText(text, toxicityLevel) {
         index++;
         processNextSentence();
       }
+    }else if(index >= sentences.length){
+      console.log("Total: " + totalScores/sentences.length);
     }
   }
 
@@ -70,6 +74,7 @@ function analyzeText(text, toxicityLevel) {
 
 function markSentenceAsToxic(sentence, toxicityScore, insultScore, profanityScore, threatScore) {
   var textNodes = getTextNodesIn(document.body);
+  sentence = sentence.replace(/[^a-zA-ZąćęłńóśźżĄĘŁŃÓŚŹŻ\s]+/gi,'');
   var regex = new RegExp(sentence, 'gi');
   textNodes.forEach(function(node) {
     if (node.nodeValue.match(regex)) {
@@ -84,7 +89,7 @@ function markSentenceAsToxic(sentence, toxicityScore, insultScore, profanityScor
 
 function getTextNodesIn(node) {
   var textNodes = [];
-  if (node.nodeType == 3) {
+  if (node.nodeType == 3){ 
     textNodes.push(node);
   } else {
     var children = node.childNodes;
@@ -120,4 +125,14 @@ function getBackgroundColor(toxicityScore, insultScore, profanityScore, threatSc
   } else {
     return 'transparent';
   }
+}
+
+function getFacebookPostImage(){
+  const baseNodes = document.body.querySelectorAll("div>img"); //.x1lliihq
+  baseNodes.forEach((a,b,c)=>{
+    const attr = a.getAttribute("alt");
+    if(attr !== undefined && attr !== null && attr !== "" && attr !== "Image"){
+      console.log(attr+"\r\n");
+    }
+  });
 }
